@@ -2,7 +2,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import fetcher from "../../../../lib/fetcher";
+import fetcher from "../../../../../lib/fetcher";
 
 export default function AdminAttendance() {
   const { id: eventId } = useParams();
