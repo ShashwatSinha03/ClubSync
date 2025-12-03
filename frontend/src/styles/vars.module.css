@@ -1,0 +1,23 @@
+:root {
+  --bg: #FAFAFA;
+  --surface: #F5F5F5;
+  --primary: #601615;
+  --primary-hover: #4D1010;
+  --text-primary: #0F0F0F;
+  --text-secondary: #6E6E6E;
+  --border: #E4E4E4;
+  --success: #2BAA78;
+  --danger: #C74343;
+}
+
+[data-theme="dark"] {
+  --bg: #0D0D0D;
+  --surface: #1A1A1A;
+  --primary: #601615;
+  --primary-hover: #7A1A19;
+  --text-primary: #F2F2F2;
+  --text-secondary: #8E8E8E;
+  --border: #2B2B2B;
+  --success: #1F8A63;
+  --danger: #A53636;
+}

@@ -1,0 +1,24 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .9rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.left, .right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand {
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.link {
+  text-decoration: none;
+  color: var(--text-secondary);
+}

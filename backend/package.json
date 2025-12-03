@@ -1,0 +1,31 @@
+{
+  "name": "clubsync-backend",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "npx prisma db push",
+    "start": "node src/server.js",
+    "build": "echo 'no build step for backend'"
+  }
+,
+  "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "bcrypt": "^5.1.0",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^7.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3",
+    "prisma": "^6.19.0"
+  }
+}
+

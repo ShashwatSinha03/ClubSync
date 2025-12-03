@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+/*
+ MongoDB-ready models.
+ - id fields are mapped to ObjectId with @db.ObjectId
+ - DateTime fields are plain DateTime (without @db.DateTime)
+ - Use `prisma db push` to sync schema to MongoDB
+*/
+
+model User {
+  id           String   @id @map("_id") @db.ObjectId @default(auto())
+  name         String
+  email        String   @unique
+  password     String
+  role         String   @default("member")
+  approved     Boolean  @default(false)
+  refreshToken String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime?
+
+  rsvps        Rsvp[]
+}
+
+model Event {
+  id         String   @id @map("_id") @db.ObjectId @default(auto())
+  name       String
+  description String?
+  date       DateTime?
+  location   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime?
+
+  rsvps      Rsvp[]
+}
+
+model Rsvp {
+  id        String   @id @map("_id") @db.ObjectId @default(auto())
+  userId    String   @db.ObjectId
+  eventId   String   @db.ObjectId
+  going     Boolean  @default(true)
+  attended  Boolean? @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+
+  user      User     @relation(fields: [userId], references: [id])
+  event     Event    @relation(fields: [eventId], references: [id])
+
+  @@index([userId, eventId], map: "rsvp_user_event_idx")
+}
