@@ -1,4 +1,3 @@
-// frontend/src/context/SessionContext.jsx
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import fetcher from "../lib/fetcher";
@@ -9,7 +8,6 @@ export function SessionProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Non-blocking hydration: try to fetch current user from backend if cookie present.
     (async () => {
       try {
         const res = await fetcher("/api/auth/me");
