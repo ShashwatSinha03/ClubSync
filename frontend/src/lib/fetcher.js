@@ -1,4 +1,3 @@
-// frontend/src/lib/fetcher.js
 const API = process.env.NEXT_PUBLIC_API_URL;
 
 export default async function fetcher(path, opts = {}) {
@@ -13,7 +12,9 @@ export default async function fetcher(path, opts = {}) {
     ...opts
   };
 
-  if (opts.body) config.body = JSON.stringify(opts.body);
+  if (opts.body) {
+    config.body = JSON.stringify(opts.body);
+  }
 
   const res = await fetch(url, config);
 
@@ -24,5 +25,6 @@ export default async function fetcher(path, opts = {}) {
   }
 
   const txt = await res.text();
-  try { return JSON.parse(txt); } catch { return txt; }
+  try { return JSON.parse(txt); }
+  catch { return txt; }
 }
