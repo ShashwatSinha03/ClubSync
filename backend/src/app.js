@@ -1,70 +1,51 @@
-// backend/src/app.js
 import express from "express";
 import cors from "cors";
-import helmet from "helmet";
-import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-import authRoutes from "./routes/auth.routes.js";
-import memberRoutes from "./routes/members.routes.js";
-import eventRoutes from "./routes/events.routes.js";
-import rsvpRoutes from "./routes/rsvp.routes.js";
-import adminRoutes from "./routes/admin.routes.js";
-
-import { errorHandler } from "./middlewares/error.middleware.js";
 
 const app = express();
 
-/* --------------------------------------------
-   1) SECURITY (Helmet)
---------------------------------------------- */
-app.use(
-  helmet({
-    contentSecurityPolicy: false,
-    crossOriginResourcePolicy: false,
-  })
-);
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  // add your production origin(s) here, e.g. "https://app.example.com"
+];
 
-/* --------------------------------------------
-   2) JSON + URL Parsing
---------------------------------------------- */
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-/* --------------------------------------------
-   3) Cookies
---------------------------------------------- */
-app.use(cookieParser());
+// Reusable origin checker
+const corsOptions = {
+  origin: (origin, callback) => {
+    // allow requests with no origin (like mobile apps, or server-to-server)
+    if (!origin) return callback(null, true);
 
-/* --------------------------------------------
-   4) CORS
---------------------------------------------- */
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
-    credentials: true,
-  })
-);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
 
-/* --------------------------------------------
-   5) Health Check
---------------------------------------------- */
-app.get("/", (req, res) => res.send("ClubSync Backend Running"));
+    // not allowed — send a clear message to server logs and return false
+    console.warn("Blocked CORS request from:", origin);
+    return callback(new Error("CORS_NOT_ALLOWED"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
+};
 
-/* --------------------------------------------
-   6) ROUTES (mount after parsers)
---------------------------------------------- */
-app.use("/api/auth", authRoutes);
-app.use("/api/members", memberRoutes);
-app.use("/api/events", eventRoutes);
-app.use("/api/rsvp", rsvpRoutes);
-app.use("/api/admin", adminRoutes);
+// Use the CORS middleware for all routes
+app.use((req, res, next) => {
+  cors(corsOptions)(req, res, (err) => {
+    if (err) {
+      // For preflight or normal requests, respond with 403 and a clear body
+      res.status(403).json({ error: "CORS not allowed", details: err.message });
+      return;
+    }
+    next();
+  });
+});
 
-/* --------------------------------------------
-   7) GLOBAL ERROR HANDLER
---------------------------------------------- */
-app.use(errorHandler);
+// Explicitly handle OPTIONS preflight quickly for all routes
+app.options("*", cors(corsOptions));
+
+// ... your routes here
+// app.use("/app/auth", authRouter)
 
 export default app;
