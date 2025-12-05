@@ -1,4 +1,0 @@
-.listRoot { border-radius: 12px; overflow: hidden; border:1px solid var(--border); background: var(--surface); }
-.controls { display:flex; gap:8px; align-items:center; margin-bottom:12px; flex-wrap:wrap; }
-.controls .input { width: 220px; }
-.controls select { padding:.5rem; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--text-primary); }
