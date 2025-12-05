@@ -5,12 +5,41 @@ const { auth, isMember, isAdmin } = require('../middleware/auth');
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// Get all events (Member only)
+// Get all events (Member only) - with Pagination, Search, Sort
 router.get('/', auth, isMember, async (req, res) => {
   try {
-    const events = await prisma.event.findMany({ orderBy: { date: 'asc' } });
-    res.json(events);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || '';
+    const sort = req.query.sort === 'desc' ? 'desc' : 'asc';
+
+    const skip = (page - 1) * limit;
+
+    const where = {
+      OR: [
+        { title: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+      ],
+    };
+
+    const [events, total] = await Promise.all([
+      prisma.event.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { date: sort },
+      }),
+      prisma.event.count({ where }),
+    ]);
+
+    res.json({
+      events,
+      total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    });
   } catch (error) {
+    console.error('Error fetching events:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
